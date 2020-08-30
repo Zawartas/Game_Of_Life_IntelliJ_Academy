@@ -7,7 +7,7 @@ public class Controller {
     private LifeGrid lifeGrid;
     private View view;
     private Timer timer;
-    private int delay = 1000;
+    private int delay = 2000;
 
     public View getView() {
         return view;
@@ -19,10 +19,14 @@ public class Controller {
 
     public void createAndShowGUI() {
         view = new View(lifeGrid);
-        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setActionOnStartStopButton(view.getjToggleButton(), timer);
-        setActionOnSlider(view.getjSlider());
-        setActionOnRestart(view.getjButtonRestart());
+        view.getStartStopButton().setSelected(false);
+        view.setVisible();
+
+        setActionOnStartStopButton(view.getStartStopButton(), timer);
+        setActionOnSlider(view.getSlider());
+        setActionOnRestart(view.getRestartButton());
+
+        view.setSliderValue(delay);
     }
 
     public void updateUI() {
@@ -37,8 +41,6 @@ public class Controller {
                 timer.stop();
             }
         });
-
-        timer.start();
     }
 
     public void setGenerationLabel() {
@@ -61,12 +63,14 @@ public class Controller {
         lifeGrid.generateGeneration();
     }
 
-    private void setActionOnStartStopButton(JToggleButton jToggleButton, Timer timer) {
-        jToggleButton.addActionListener(e -> {
-            if (jToggleButton.isSelected()) {
+    private void setActionOnStartStopButton(JButton startStopButton, Timer timer) {
+        startStopButton.addActionListener(e -> {
+            if (timer.isRunning()) {
                 timer.stop();
-            } else {
+                startStopButton.setText("START");
+            } else if (!timer.isRunning()) {
                 timer.start();
+                startStopButton.setText("STOP");
             }
         });
     }
@@ -78,7 +82,7 @@ public class Controller {
     private void setActionOnRestart(JButton jButton) {
         jButton.addActionListener(e -> {
             timer.stop();
-            view.getjToggleButton().setSelected(true);
+            view.getStartStopButton().setText("START");
             lifeGrid.reset();
             setGenerationLabel();
             setAliveLabel(lifeGrid.getAliveCellsCount());

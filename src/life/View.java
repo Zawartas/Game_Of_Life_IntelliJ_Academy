@@ -3,6 +3,8 @@ package life;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class View extends JFrame {
 
@@ -11,26 +13,20 @@ public class View extends JFrame {
     private JPanel gridPanel = new JPanel();
     private JLabel GenerationLabel = new JLabel();
     private JLabel AliveLabel = new JLabel();
-    private JToggleButton jToggleButton;
+    private JButton startStopButton = new JButton("START");
+    private JButton restartButton = new JButton("RESTART");
+    private JSlider slider;
 
-    public JButton getjButtonRestart() {
-        return jButtonRestart;
+    public JButton getRestartButton() {
+        return restartButton;
     }
 
-    private JButton jButtonRestart;
-
-    public void setjSliderValue(int value) {
-        jSlider.setValue(value);
+    public JButton getStartStopButton() {
+        return startStopButton;
     }
 
-    private JSlider jSlider;
-
-    public JToggleButton getjToggleButton() {
-        return jToggleButton;
-    }
-
-    public JSlider getjSlider() {
-        return jSlider;
+    public JSlider getSlider() {
+        return slider;
     }
 
     public View(LifeGrid lifeGrid) {
@@ -48,7 +44,9 @@ public class View extends JFrame {
 
         this.add(createNorthPanel(), BorderLayout.NORTH);
         this.add(gridPanel, BorderLayout.CENTER);
+    }
 
+    public void setVisible() {
         setVisible(true);
     }
 
@@ -85,18 +83,28 @@ public class View extends JFrame {
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
         JPanel settingsPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
-        jToggleButton = new JToggleButton("Start/Pause");
-        settingsPanel.add(jToggleButton);
+        startStopButton.setPreferredSize(new Dimension(100, 30));
+        restartButton.setPreferredSize(new Dimension(100, 30));
+        settingsPanel.add(startStopButton);
+        settingsPanel.add(restartButton);
 
-        jButtonRestart = new JButton("Restart");
-        settingsPanel.add(jButtonRestart);
+        slider = new JSlider(JSlider.HORIZONTAL,
+                1000, 5000, 1000);
+        slider.setPreferredSize(new Dimension(300, 50));
+        slider.setMinorTickSpacing(1000);
 
-        jSlider = new JSlider(JSlider.HORIZONTAL,
-                500, 5000, 1000);
-        jSlider.setMinorTickSpacing(500);
-        jSlider.setPaintTicks(true);
-        jSlider.setPaintLabels(true);
-        settingsPanel.add(jSlider);
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(1000, new JLabel("1 sec"));
+        labels.put(2000, new JLabel("2 sec"));
+        labels.put(3000, new JLabel("3 sec"));
+        labels.put(4000, new JLabel("4 sec"));
+        labels.put(5000, new JLabel("5 sec"));
+        slider.setLabelTable(labels);
+
+        slider.setPaintLabels(true);
+        slider.setPaintTicks(true);
+        slider.setSnapToTicks(true);
+        settingsPanel.add(slider);
 
         setGenerationLabel(0);
         setAliveLabel(0);
@@ -115,5 +123,9 @@ public class View extends JFrame {
         northPanel.add(settingsPanel);
         northPanel.add(labelsPanel);
         return northPanel;
+    }
+
+    public void setSliderValue(int delay) {
+        this.slider.setValue(delay);
     }
 }
