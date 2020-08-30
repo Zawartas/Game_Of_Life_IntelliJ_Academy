@@ -1,5 +1,5 @@
 package life;
 
 public interface GenerationAlgorithm {
-    LifeGrid createNewGenerations(LifeGrid lifeGrid, int iterations);
+    void createNewGenerations(LifeGrid lifeGrid);
 }

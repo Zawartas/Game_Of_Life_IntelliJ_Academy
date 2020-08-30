@@ -1,38 +1,22 @@
 package life;
 
-import static java.lang.Thread.*;
-
 public class DefaultAlgorithm implements GenerationAlgorithm {
 
     @Override
-    public LifeGrid createNewGenerations(LifeGrid baseLifeGrid, int iterations) {
-        LifeGrid tempLifeGrid = baseLifeGrid.clone();
-        LifeGrid a = new LifeGrid(baseLifeGrid.getSize());
-
-        for (int k = 1; k <= iterations; ++k) {
+    public void createNewGenerations(LifeGrid baseLifeGrid) {
+        LifeGrid targetLifeGrid = new LifeGrid(baseLifeGrid.getSize());
             for (int x = 0; x < baseLifeGrid.getSize(); ++x) {
                 for (int y = 0; y < baseLifeGrid.getSize(); ++y) {
-                    boolean state = tempLifeGrid.getCell(x, y);
-                    int aliveNeighbors = checkNeighbors(tempLifeGrid, x, y);
-                    boolean newState = cellStateBasedOnPreviousGeneration(state, aliveNeighbors);
-                    a.setCell(x, y, newState);
+                    boolean oldState = baseLifeGrid.getCell(x, y);
+                    int aliveNeighbors = checkNeighbors(baseLifeGrid, x, y);
+                    boolean newState = cellStateBasedOnPreviousGeneration(oldState, aliveNeighbors);
+                    targetLifeGrid.setCell(x, y, newState);
                 }
             }
-            tempLifeGrid.fillWithValuesFrom(a);
-            waitFor(800);
-
-            a.showGrid(k);
-        }
-        return tempLifeGrid;
+        baseLifeGrid.fillWithValuesFrom(targetLifeGrid);
     }
 
-    private void waitFor(int timeInMiliseconds) {
-        try {
-            sleep(timeInMiliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private boolean cellStateBasedOnPreviousGeneration(boolean currentState, int aliveNeighbors) {
         if (currentState && !(aliveNeighbors == 2 || aliveNeighbors == 3)) {
